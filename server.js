@@ -40,13 +40,38 @@ const People = mongoose.model('People', peopleSchema);
 app.use(express.json());
 // app.use (express.urlencoded) {extended: false}))
 //would turn form data into req.body
+//logger with a option string 'dev'
+app.use(logger('dev'));
 
 // Mount Routes
 ///Root Route
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
-//
+
+//INDEX ROUTE
+//To /api/index
+app.get('/api/people', async (req, res) => {
+    try {
+        res.status(200).json(await People.find ({}));
+    //const people = await People.find({});
+    //res.status(200).json(people);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: ' Bad Request ' });
+  }
+});
+
+//CREATE ROUTE
+// Now I cant POST a person on the API/people
+app.post('/api/people', async (req, res) => {
+    try { res.status(201).json(await People.create(req.body));
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: ' Bad Request ' });
+    }
+});
+
 
 // Tell App to Listen On Port
 //interpulated port in the console log / will make sure its working correctly
